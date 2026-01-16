@@ -70,15 +70,13 @@ Our methodology produces four primary data products: (1) individual tree crown p
 \subsection{Tree Crown Segmentation}
 % Segmentation and Overlay
 % Insert Detection Bounding Box Figure
-To detect individual trees from high-resolution aerial imagery, we employed the DeepForest model % TODO: Add DeepForest citation to references.bib
-, a deep learning-based object detection framework specifically designed for tree crown delineation. DeepForest utilizes a RetinaNet architecture % TODO: Add RetinaNet citation to references.bib
+To detect individual trees from high-resolution aerial imagery, we employed the DeepForest model \cite{weinsteinCrossValidationDeepLearning2020}, a deep learning-based object detection framework specifically designed for tree crown delineation. DeepForest utilizes a RetinaNet architecture \cite{linFocalLossDense2017}
  with a ResNet-50 backbone and is trained on a diverse set of forest types using RGB imagery. In our workflow, we leveraged the pre-trained model provided by DeepForest, which identifies individual tree crowns by predicting bounding boxes directly from RGB image tiles. This approach allows for accurate tree detection without the need for multispectral or LiDAR data, making it suitable for generalization in context where Aerial Lidar Scan data might not be available. The model outputs were further refined through confidence thresholding and non-maximum suppression to eliminate duplicate detections.
 
 
 \subsection{Voxel-based Leaf Area Index Estimation}\label{LAI}
 % Leaf Area Index Estimation
-Our LAI calculation leverages a voxelization technique implemented through the LeafR package % TODO: Add Almeida et al. (2019) LeafR package citation to references.bib
-, which processes LiDAR point cloud data by transforming it into a voxel-based representation of the canopy structure. The space containing each tree crown is divided into cubic voxels, with the ratio of vegetation points to total points within each voxel calculated and calibrated against Beer-Lambert light extinction principles to estimate Leaf Area Density (LAD). LAD profiles are generated using the MacArthur-Horn method % TODO: Add MacArthur-Horn method citation to references.bib
+Our LAI calculation leverages a voxelization technique implemented through the LeafR package \cite{almeidaLeafRPackageEstimating2019}, which processes LiDAR point cloud data by transforming it into a voxel-based representation of the canopy structure. The space containing each tree crown is divided into cubic voxels, with the ratio of vegetation points to total points within each voxel calculated and calibrated against Beer-Lambert light extinction principles to estimate Leaf Area Density (LAD). LAD profiles are generated using the MacArthur-Horn method \cite{macarthurFoliageProfileHeight1969}
 , which analyzes the probability of LiDAR pulses penetrating the canopy and calculates the return ratio from each vertical layer, providing a systematic understanding of leaf distribution. The LAI is derived by vertically integrating the LAD profile, summing leaf area density values across the canopy height to provide a comprehensive measure of the total one-sided leaf area per unit ground surface area. The selected 0.5m³ resolution balances computational efficiency with accuracy, enabling non-destructive, scalable LAI estimation for individual trees or entire urban forests. This method could also support temporal analysis through repeated LiDAR scans, facilitating the tracking of LAI changes over time, seasons, or in response to environmental factors.
 
 \subsection{Machine Learning Pipeline for LAI Prediction}
@@ -141,8 +139,7 @@ Models were trained exclusively on the training set, with hyperparameter tuning 
 
 \textbf{Random Forest importance:} Mean decrease in Gini impurity provided an independent importance ranking. Spearman rank correlation between XGBoost and Random Forest rankings assessed consistency across algorithms.
 
-% \textbf{SHAP values:} We applied SHapley Additive exPlanations % TODO: Add lundberg2017unified citation to references.bib (SHAP: Lundberg & Lee, 2017)
- to the XGBoost model for model-agnostic feature importance. Global importance was measured as mean absolute SHAP value per feature. SHAP dependence plots revealed interaction effects (e.g., NDVI $\times$ height) and non-linear relationships.
+\textbf{SHAP values:} We applied SHapley Additive exPlanations \cite{lundbergUnifiedApproachInterpreting2017} to the XGBoost model for model-agnostic feature importance. Global importance was measured as mean absolute SHAP value per feature. SHAP dependence plots revealed interaction effects (e.g., NDVI $\times$ height) and non-linear relationships.
 
 % \subsubsection{Feature Ablation Study}
 
