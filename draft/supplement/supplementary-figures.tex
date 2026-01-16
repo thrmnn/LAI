@@ -1,26 +1,26 @@
 \section*{Supplementary Information}
 
-\subsection*{Supplementary Figure 1: NDVI-based Contrast Enhancement}
+\subsection*{Supplementary Figure 1: Hemispherical Photography Validation}
 
 \begin{figure}[h!]
     \centering
     % First image
-    \begin{subfigure}[b]{0.48\textwidth} % Adjust width as needed for spacing
+    \begin{subfigure}[b]{0.41\textwidth} % Adjust width as needed for spacing
         \centering
-        \includegraphics[width=\linewidth, height=\linewidth, keepaspectratio]{figures/methods/RGB_zone0.jpeg}
-        \caption{Original Aerial RGB Image}
-        \label{fig:supp_ndvi_original}
+        \includegraphics[width=\linewidth, height=\linewidth, keepaspectratio]{figures/methods/hemispherical_fisheye.png}
+        \caption{Original Image}
+        \label{fig:supp_hemispherical_original}
     \end{subfigure}
     \hfill % Adds horizontal space between subfigures
     % Second image
     \begin{subfigure}[b]{0.48\textwidth}
         \centering
-        \includegraphics[width=\linewidth, height=\linewidth, keepaspectratio]{figures/methods/06_final_combined.png}
-        \caption{NDVI-Enhanced Image}
-        \label{fig:supp_ndvi_preprocessed}
+        \includegraphics[width=\linewidth, height=\linewidth, keepaspectratio]{figures/methods/binarized_fisheye.png}
+        \caption{Preprocessed Image}
+        \label{fig:supp_hemispherical_binarized}
     \end{subfigure}
-    \caption{\textbf{NDVI-based contrast enhancement workflow.} The preprocessing pipeline applies NDVI-based contrast enhancement to aerial RGB imagery to improve detection and segmentation of individual urban trees. (a) Original aerial RGB image showing urban tree canopies. (b) NDVI-enhanced image with improved contrast for tree crown delineation. This preprocessing step significantly improves the performance of deep learning segmentation models by emphasizing vegetation features while suppressing background urban surfaces.}
-    \label{fig:supp_ndvi_enhancement}
+    \caption{\textbf{Hemispherical photography for LAI validation.} Independent validation of LiDAR-derived LAI estimates using upward-looking hemispherical photography beneath tree canopies. (a) Original hemispherical fisheye image capturing canopy gap structure. (b) Binarized image after thresholding for gap fraction analysis. LAI is computed via the Beer-Lambert law applied to canopy openness. Hemispherical photography operates on optical gap fraction principles, providing an independent measurement approach to LiDAR point cloud voxelization. Agreement between methods (Table 2) confirms the physical validity of our voxelization-based LAI estimates.}
+    \label{fig:supp_hemispherical_LAI}
 \end{figure}
 
 \subsection*{Supplementary Figure 2: Tree Species Distribution}
