@@ -224,11 +224,13 @@ After any LaTeX edits, you MUST:
 ### Compilation Workflow
 
 When requested or after significant edits:
-- Run `pdflatex` (or appropriate engine) to compile the document
-- If bibliography is present, run `biber`/`bibtex` followed by additional `pdflatex` passes
+- Use the compilation script `./compile.sh` from the project root directory
+- The script automatically handles: `pdflatex` → `bibtex` → `pdflatex` → `pdflatex` passes
 - Capture and report any compilation errors or warnings
 - Generate PDF output for visual inspection
 - Identify visual/formatting problems that require LaTeX fixes
+
+**IMPORTANT**: All compilation scripts and documentation files MUST be placed in the project root directory, NOT in the `draft/` folder. The `draft/` folder should contain only manuscript source files (`.tex`, `.bib`, figures, etc.).
 
 ### PDF Review Focus
 
@@ -252,6 +254,34 @@ When asked to simulate a reviewer:
 - No scientific criticism
 - No speculative concerns
 - Think like a strict but fair reviewer
+
+---
+
+## FILE ORGANIZATION & SCRIPT LOCATION
+
+**CRITICAL**: All scripts, documentation, and helper files MUST be placed in the project root directory, NOT in the `draft/` folder.
+
+### Project Structure:
+```
+project_root/
+├── compile.sh                    # Compilation script (root)
+├── COMPILATION_SETUP.md          # Documentation (root)
+├── CLAUDE.md                     # This configuration file (root)
+└── draft/                        # Manuscript source files only
+    ├── sn-article.tex
+    ├── sections/
+    ├── figures/
+    └── ...
+```
+
+### Rules:
+- **Scripts** (e.g., `compile.sh`): Place in project root
+- **Documentation** (e.g., `COMPILATION_SETUP.md`): Place in project root
+- **Configuration files** (e.g., `CLAUDE.md`): Place in project root
+- **Manuscript files** (`.tex`, `.bib`, figures): Keep in `draft/` folder
+- The compilation script automatically changes to `draft/` directory when executed
+
+When creating new scripts or documentation, always place them in the project root, not in `draft/`.
 
 ---
 

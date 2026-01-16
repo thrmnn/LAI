@@ -1,0 +1,31 @@
+# LaTeX generated files
+*.aux
+*.bbl
+*.blg
+*.log
+*.out
+*.toc
+*.lof
+*.lot
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.synctex(busy)
+*.pdfsync
+
+# PDFs (generated from source)
+*.pdf
+!draft/user-manual.pdf
+
+# Compilation logs
+compile*.log
+compile_output.log
+
+# Temporary files
+*~
+.*.swp
+.DS_Store
+
+# Python cache (if any)
+__pycache__/
+*.pyc
