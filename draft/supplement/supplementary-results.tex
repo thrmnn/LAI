@@ -1,0 +1,60 @@
+\section*{Supplementary Results}
+
+\subsection*{S2. Feature Category Ablation Analysis}
+
+Systematic feature ablation quantified the marginal contribution of engineered feature categories to model performance (Supplementary Table 1). This analysis assessed whether complex feature engineering justified increased model complexity.
+
+\begin{table}[h!]
+    \centering
+    \caption{Feature category ablation study results using XGBoost on the validation set.}
+    \label{tab:supp_ablation}
+    \begin{tabular}{lcccc}
+        \toprule
+        Feature Configuration & R² & RMSE & MAE & $\Delta$R² vs Full \\
+        \midrule
+        Full Model (All Features) & 0.788 & 0.614 & 0.458 & --- \\
+        Base Only (Height, Crown, NDVI) & 0.779 & 0.626 & 0.468 & -0.009 \\
+        Base + Allometric & 0.783 & 0.620 & 0.463 & -0.005 \\
+        Base + Species & 0.782 & 0.622 & 0.465 & -0.006 \\
+        Base + NDVI Interactions & 0.782 & 0.621 & 0.464 & -0.006 \\
+        Remove Species Features & 0.785 & 0.617 & 0.460 & -0.003 \\
+        Remove Allometric Features & 0.787 & 0.615 & 0.459 & -0.001 \\
+        Remove NDVI Interactions & 0.785 & 0.617 & 0.461 & -0.003 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+The ablation study revealed that most engineered feature categories provided marginal performance gains. Removing all features beyond the base set (height, crown dimensions, NDVI) reduced R² by only 0.009 (from 0.788 to 0.779), indicating that 13 fundamental features captured 98.9\% of achievable model performance. Individual feature categories contributed minimally: removing species features decreased R² by 0.003, allometric features by 0.001, and NDVI interactions by 0.003.
+
+The most informative configuration beyond base features was Base + Allometric (R² = 0.783, +0.004 vs. Base Only), suggesting that height-diameter power relationships provided modest additional predictive power. Conversely, species information showed near-zero marginal contribution when controlling for morphology and spectral characteristics, likely because height and crown dimensions implicitly encoded species-specific architecture captured by voxel-based LAI estimation.
+
+These findings suggest a parsimonious model using only base morphological features and NDVI would sacrifice minimal predictive accuracy ($\Delta$R² = 0.009, $\Delta$RMSE = +0.012) while substantially reducing feature engineering complexity and computational requirements.
+
+\subsection*{S3. Species-Specific Performance Analysis}
+
+Model performance varied substantially across species with sufficient test samples (N $\geq$ 20; Supplementary Table 2). Only species exceeding this threshold are reported to ensure statistical reliability.
+
+\begin{table}[h!]
+    \centering
+    \caption{Species-specific model performance for taxa with N $\geq$ 20 in test set.}
+    \label{tab:supp_species}
+    \begin{tabular}{lccccc}
+        \toprule
+        Species & N & R² & RMSE & MAE & LAI SD \\
+        \midrule
+        Fraxinus & 28 & 0.901 & 0.490 & 0.372 & 1.56 \\
+        Ulmus & 92 & 0.833 & 0.422 & 0.318 & 1.03 \\
+        Acer & 31 & 0.762 & 0.589 & 0.445 & 1.21 \\
+        Quercus & 23 & 0.718 & 0.634 & 0.482 & 1.15 \\
+        Mixed/Unknown & 412 & 0.779 & 0.628 & 0.469 & 1.34 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+Fraxinus exhibited the highest prediction accuracy (R² = 0.901, RMSE = 0.490), suggesting highly consistent morphology-LAI relationships within this genus. Ulmus also showed strong performance (R² = 0.833, RMSE = 0.422) with the largest sample size (N = 92), providing the most statistically robust species-specific estimate. Acer and Quercus demonstrated moderate performance (R² = 0.762 and 0.718, respectively), though still substantially exceeding the allometric baseline.
+
+Notably, the mixed/unknown species category (N = 412) achieved R² = 0.779—comparable to the overall test set performance—indicating that species identification is not essential for accurate LAI prediction when morphological and spectral features are available. This finding has important practical implications, as 68.2\% of trees in the full dataset lacked species labels, yet likely remain predictable using the trained model.
+
+Performance variation across species appears partially related to LAI variance within each group: Fraxinus showed the highest R² despite moderate LAI variability (SD = 1.56), while Quercus exhibited lower R² with similar variance (SD = 1.15), suggesting that some genera maintain more consistent architectural relationships with LAI than others. Sample size effects cannot be entirely ruled out for smaller groups (Fraxinus: N = 28, Quercus: N = 23), though no monotonic relationship between sample size and R² was observed.
+
+\clearpage
