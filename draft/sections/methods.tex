@@ -81,78 +81,45 @@ Our LAI calculation leverages a voxelization technique implemented through the L
 
 \subsection{Machine Learning Pipeline for LAI Prediction}
 
-% \subsubsection{Feature Engineering}
+\subsubsection{Feature Construction}
 
-We constructed a comprehensive feature set encompassing 58 variables across six categories to capture morphological, spectral, and contextual information relevant to LAI prediction.
+We constructed 58 features across six categories to capture morphological, spectral, and contextual information relevant to LAI prediction. Feature engineering followed established ecological relationships and scaling theory to maximize predictive power while maintaining interpretability.
 
-\textbf{Base morphological features} (13 features) included tree height statistics (mean, minimum, maximum, standard deviation, median), crown dimensions (diameter, area, perimeter), structural ratios (height-to-crown ratio), and detection confidence scores from the segmentation algorithm.
+\textbf{Base morphological} (n=13): tree height statistics (mean, min, max, SD, median), crown dimensions (diameter, area, perimeter), structural ratios (height-to-crown), segmentation confidence scores.
 
-\textbf{Spectral features} (6 features) comprised NDVI statistics within individual tree crowns (mean, minimum, maximum, standard deviation), neighborhood spectral context (average NDVI within 20m radius), and spatial NDVI variability.
+\textbf{Spectral} (n=6): NDVI statistics (mean, min, max, SD) within individual tree crowns, neighborhood spectral context (average NDVI within 20m radius), spatial NDVI variability.
 
-\textbf{Allometric features} (8 features) applied power law and logarithmic transformations following biological scaling theory: height$^2$, crown\_diameter$^2$, log(height), log(crown\_area), and the height-diameter power term $(height/diameter)^{1.5}$.
+\textbf{Allometric} (n=8): power law and logarithmic transformations following biological scaling theory (height$^2$, crown\_diameter$^2$, log(height), log(crown\_area), height-diameter power term $(height/diameter)^{1.5}$).
 
-\textbf{NDVI interaction terms} (7 features) captured spectral-structural relationships through multiplicative interactions (NDVI $\times$ height, NDVI $\times$ crown\_diameter) and derived indices (canopy vigor per unit height: NDVI/height).
+\textbf{NDVI interaction terms} (n=7): spectral-structural relationships through multiplicative interactions (NDVI $\times$ height, NDVI $\times$ crown\_diameter) and derived indices (canopy vigor per unit height: NDVI/height).
 
-\textbf{Categorical features} (6 features) encoded height classes as binary indicators ($<$5m, 5--10m, 10--15m, 15--20m, 20--25m, $>$25m) to capture potential threshold effects in height-LAI relationships.
+\textbf{Categorical} (n=6): height class binary indicators ($<$5m, 5--10m, 10--15m, 15--20m, 20--25m, $>$25m) to capture threshold effects in height-LAI relationships.
 
-\textbf{Species and geospatial features} (10 features) included leaf habit (deciduous/coniferous), species groupings (major genera vs. ``unknown''), nearest neighbor distance, local tree density (counts within 15m, 30m, 50m radii), and edge proximity indicators.
+\textbf{Species and geospatial} (n=10): leaf habit (deciduous/coniferous), species groupings (major genera vs. unknown), nearest neighbor distance, local tree density (15m, 30m, 50m radii), edge proximity indicators.
 
-\textbf{Feature preprocessing:} Continuous features were standardized using z-score normalization ($\mu=0$, $\sigma=1$) fitted on the training set and applied identically to validation and test sets to prevent data leakage. Categorical variables were one-hot encoded for linear models and handled natively by tree-based algorithms. Missing values in species features were assigned to an ``unknown'' category; missing morphological features (0.3\% of observations) were median-imputed using training set statistics.
+\subsubsection{Data Preprocessing}
 
-% \subsubsection{Data Partitioning}
+Continuous features were standardized using z-score normalization ($\mu=0$, $\sigma=1$) fitted on the training set and applied identically to validation and test sets to prevent data leakage. This normalization ensures features contribute proportionally to distance-based and gradient-based algorithms. Categorical variables were one-hot encoded for linear models and handled natively by tree-based algorithms. Missing values in species features (common for unregistered trees) were assigned to an ``unknown'' category; missing morphological features (0.3\% of observations) were median-imputed using training set statistics.
 
-The dataset (N=7,085) was partitioned into training (70\%, N=4,959), validation (15\%, N=1,063), and test (15\%, N=1,063) sets using stratified random sampling. Stratification was performed on LAI quintiles to maintain representative target distributions across splits, with secondary stratification on height tertiles within each LAI stratum. A fixed random seed (seed=42) ensured reproducibility.
+The dataset (N=7,085) was partitioned into training (70\%, N=4,959), validation (15\%, N=1,063), and test (15\%, N=1,063) sets using stratified random sampling. Stratification was performed on LAI quintiles to maintain representative target distributions across splits, with secondary stratification on height tertiles within each LAI stratum to ensure balanced representation of tree size classes. A fixed random seed (seed=42) ensured reproducibility across all experiments.
 
-% \subsubsection{Model Selection and Architecture}
+\subsubsection{Model Selection}
 
-We evaluated eight predictive models representing diverse algorithmic approaches:
+We evaluated eight predictive models representing diverse algorithmic approaches: (1) \textbf{Linear Regression} (ordinary least squares baseline for assessing linear relationships), (2-3) \textbf{Ridge and Lasso} Regression (L2/L1 regularized linear models for comparison), (4) \textbf{Random Forest} (bagging ensemble of 500 decision trees with randomized feature subsets), (5) \textbf{XGBoost} (gradient boosted decision trees with L1/L2 regularization, optimized via Bayesian search), (6) \textbf{Support Vector Regression} (RBF kernel for non-linear mapping), (7) \textbf{Neural Network} (two-layer MLP [100, 50] with ReLU activation and dropout regularization), and (8) \textbf{Allometric Baseline} (traditional forestry model: $\text{LAI} = \alpha \times H^\beta \times \text{CD}^\gamma$ estimated via non-linear least squares, providing an ecological benchmark).
 
-\textbf{(1) Linear Regression:} Ordinary least squares baseline to assess linear relationships without regularization (scikit-learn \texttt{LinearRegression}).
+Hyperparameters were tuned via grid search (Ridge, Lasso, Random Forest, SVR), Bayesian optimization (XGBoost using Optuna with 100 trials), or validation set performance monitoring (Neural Network with early stopping). Detailed hyperparameter configurations for all models are provided in Supplementary Methods S1. Models were trained exclusively on the training set, with hyperparameter tuning guided by validation set performance. The test set remained completely held out until final evaluation to provide unbiased performance estimates.
 
-\textbf{(2) Ridge Regression:} L2-regularized linear model with penalty $\alpha\|\mathbf{w}\|_2^2$. Hyperparameter $\alpha$ was tuned via 5-fold cross-validation over $\{0.01, 0.1, 1, 10, 100\}$.
+\subsubsection{Model Evaluation}
 
-\textbf{(3) Lasso Regression:} L1-regularized linear model with penalty $\alpha\|\mathbf{w}\|_1$ for implicit feature selection. Hyperparameter $\alpha$ was tuned over $\{0.001, 0.01, 0.1, 1, 10\}$.
+\textbf{Performance metrics}: We evaluated models using three complementary metrics: (1) coefficient of determination ($R^2 = 1 - \text{SS}_{\text{res}}/\text{SS}_{\text{tot}}$) measuring explained variance, (2) root mean squared error (RMSE = $\sqrt{\sum(y_{\text{pred}} - y_{\text{true}})^2 / n}$) in LAI units (m²/m²), and (3) mean absolute error (MAE = $\sum|y_{\text{pred}} - y_{\text{true}}| / n$) providing robust, interpretable prediction error less sensitive to outliers than RMSE.
 
-\textbf{(4) Random Forest:} Bagging ensemble of 500 decision trees with randomized feature subsets. Hyperparameters were tuned via grid search: \texttt{max\_depth} $\in \{10, 20, 30, \text{None}\}$, \texttt{min\_samples\_leaf} $\in \{1, 2, 4\}$, \texttt{max\_features} $\in \{\text{sqrt}, \text{log2}, 0.3\}$. Final configuration: \texttt{max\_depth}=20, \texttt{min\_samples\_leaf}=2, \texttt{max\_features}=sqrt.
+\textbf{Feature importance analysis}: We quantified feature contributions using three complementary approaches to ensure robustness across algorithmic assumptions. XGBoost gain-based importance computed the average information gain across all tree splits utilizing each feature, normalized to sum to 1.0. Random Forest importance measured mean decrease in Gini impurity, providing an independent ranking. Spearman rank correlation between XGBoost and Random Forest rankings assessed consistency across algorithms. SHapley Additive exPlanations (SHAP) \cite{lundbergUnifiedApproachInterpreting2017} provided model-agnostic feature importance via game-theoretic attribution. Global importance was measured as mean absolute SHAP value per feature. SHAP dependence plots revealed interaction effects (e.g., NDVI $\times$ height) and non-linear relationships not captured by univariate importance metrics.
 
-\textbf{(5) XGBoost:} Gradient boosted decision trees with L1/L2 regularization. Hyperparameters were optimized via Bayesian optimization (Optuna, 100 trials) with objective function minimizing validation RMSE. Search ranges: \texttt{learning\_rate} [0.01, 0.3], \texttt{max\_depth} [3, 10], \texttt{n\_estimators} [100, 1000], \texttt{subsample} [0.6, 1.0], \texttt{colsample\_bytree} [0.6, 1.0], \texttt{reg\_alpha} [0, 1], \texttt{reg\_lambda} [0, 10]. Early stopping with patience=50 rounds prevented overfitting. Final configuration: \texttt{learning\_rate}=0.08, \texttt{max\_depth}=6, \texttt{n\_estimators}=450, \texttt{subsample}=0.85.
+\textbf{Feature ablation study}: To quantify the marginal contribution of engineered feature categories, we conducted a systematic ablation study. Eight feature configurations were evaluated: (1) \textit{All Features} (N=42, baseline), (2) \textit{Base Only} (N=13: height, crown, NDVI only), (3) \textit{Base + NDVI interactions} (N=19), (4) \textit{Base + Allometric} (N=23), (5) \textit{No Species} (N=39), (6) \textit{No Allometric} (N=34), (7) \textit{No NDVI Interactions} (N=38), (8) \textit{No Geospatial} (N=38). For each configuration, an XGBoost model was trained using identical hyperparameters, and performance was evaluated on the validation set. Performance degradation ($\Delta R^2$) relative to the full feature set quantified each category's importance.
 
-\textbf{(6) Support Vector Regression (SVR):} Radial basis function kernel with hyperparameters $C$ (regularization) $\in \{0.1, 1, 10, 100\}$, $\epsilon$ (tube width) $\in \{0.01, 0.1, 0.5\}$, and $\gamma$ (kernel coefficient) $\in \{\text{scale}, \text{auto}, 0.001, 0.01\}$ tuned via grid search.
+\textbf{Species-stratified performance}: We analyzed model performance stratified by species to identify taxa-specific prediction patterns. Only species with $N \geq 20$ test samples were included to ensure statistical reliability. Performance metrics ($R^2$, RMSE, MAE) were calculated separately for each species group.
 
-\textbf{(7) Neural Network:} Multi-layer perceptron with architecture [100, 50] (two hidden layers, ReLU activation), dropout rate 0.2, Adam optimizer (learning rate=0.001). Training used batch size 32, maximum 500 epochs with early stopping (patience=20 on validation loss).
-
-\textbf{(8) Allometric Baseline:} Traditional forestry model: $\text{LAI} = \alpha \times H^\beta \times \text{CD}^\gamma$, where $H$ is height and CD is crown diameter. Parameters $(\alpha, \beta, \gamma)$ were estimated via non-linear least squares on training data, providing an ecological benchmark.
-
-% \subsubsection{Model Training and Evaluation}
-
-Models were trained exclusively on the training set, with hyperparameter tuning guided by validation set performance. The test set remained completely held out until final evaluation to provide unbiased performance estimates.
-
-\textbf{Performance metrics:} We evaluated models using three complementary metrics: (1) coefficient of determination ($R^2 = 1 - \text{SS}_{\text{res}}/\text{SS}_{\text{tot}}$) measuring explained variance, (2) root mean squared error (RMSE = $\sqrt{\sum(y_{\text{pred}} - y_{\text{true}})^2 / n}$) in LAI units, and (3) mean absolute error (MAE = $\sum|y_{\text{pred}} - y_{\text{true}}| / n$) providing robust, interpretable prediction error.
-
-% \textbf{Statistical significance testing:} Pairwise model comparisons employed paired t-tests on performance estimates from 5-fold stratified cross-validation repeated 10 times (50 samples per model). Stratification maintained LAI quintile distributions within folds. Bonferroni correction adjusted significance threshold to $\alpha = 0.05/28 = 0.0018$ for multiple comparisons across 8 models.
-
-% \textbf{Residual analysis:} We examined residual patterns via predicted-vs-actual scatter plots, residual-vs-predicted plots, and Q-Q plots to assess normality. Heteroscedasticity was tested using the Breusch-Pagan test. Spatial autocorrelation in residuals was quantified via Moran's $I$ statistic with a 10km distance band to detect systematic spatial prediction biases.
-
-% \subsubsection{Feature Importance Analysis}
-
-\textbf{XGBoost gain-based importance:} Feature importance was computed as the average information gain across all tree splits utilizing each feature, normalized to sum to 1.0. This quantifies each feature's contribution to reducing prediction error.
-
-\textbf{Random Forest importance:} Mean decrease in Gini impurity provided an independent importance ranking. Spearman rank correlation between XGBoost and Random Forest rankings assessed consistency across algorithms.
-
-\textbf{SHAP values:} We applied SHapley Additive exPlanations \cite{lundbergUnifiedApproachInterpreting2017} to the XGBoost model for model-agnostic feature importance. Global importance was measured as mean absolute SHAP value per feature. SHAP dependence plots revealed interaction effects (e.g., NDVI $\times$ height) and non-linear relationships.
-
-% \subsubsection{Feature Ablation Study}
-
-To quantify the marginal contribution of engineered feature categories, we conducted a systematic ablation study. Eight feature configurations were evaluated: (1) \textit{All Features} (N=42, baseline), (2) \textit{Base Only} (N=13: height, crown, NDVI only), (3) \textit{Base + NDVI interactions} (N=19), (4) \textit{Base + Allometric} (N=23), (5) \textit{No Species} (N=39), (6) \textit{No Allometric} (N=34), (7) \textit{No NDVI Interactions} (N=38), (8) \textit{No Geospatial} (N=38). For each configuration, an XGBoost model was trained using identical hyperparameters, and performance was evaluated on the validation set. Performance degradation ($\Delta R^2$) relative to the full feature set quantified each category's importance.
-
-% \subsubsection{Species-Specific Performance}
-
-We analyzed model performance stratified by species to identify taxa-specific prediction patterns. Only species with $N \geq 20$ test samples were included to ensure statistical reliability. Performance metrics ($R^2$, RMSE, MAE) were calculated separately for each species group. 
-% One-way ANOVA tested whether performance varied significantly across species ($\alpha=0.05$), with Tukey HSD post-hoc tests for pairwise comparisons if significant.
-
-% \subsubsection{Software and Reproducibility}
-
-All analyses were performed in Python 3.9.7 using scikit-learn 1.0.2 (linear models, Random Forest, SVR, Neural Network), XGBoost 1.5.0, SHAP 0.40.0, and Optuna 2.10.0 for hyperparameter optimization. Random seeds were fixed (seed=42) across all stochastic processes (data splitting, model initialization, cross-validation) to ensure reproducibility. Computations were performed on an Intel Core i7, Nvidia GeForce RTX 3090 (32GB RAM). Code and trained models will be made publicly available upon publication at [repository URL].
+\textbf{Software and reproducibility}: All analyses were performed in Python 3.9.7 using scikit-learn 1.0.2 (linear models, Random Forest, SVR, Neural Network), XGBoost 1.5.0, SHAP 0.40.0, and Optuna 2.10.0 for hyperparameter optimization. Random seeds were fixed (seed=42) across all stochastic processes (data splitting, model initialization, cross-validation) to ensure reproducibility. Computations were performed on an Intel Core i7 with Nvidia GeForce RTX 3090 (32GB RAM). Code and trained models will be made publicly available upon publication at [repository URL].
 % \subsubsection{Model Selection and Architecture}
 % % Model Selection and Architecture
 % To enable LAI prediction in areas with limited LiDAR coverage, we developed a machine learning model to estimate LAI from tree morphological parameters and genus information. After evaluating multiple algorithms (Linear Regression, Support Vector Regression, Gradient Boosting), Random Forest Regression demonstrated superior performance (lowest RMSE and highest R²) and was selected as the final model. The model architecture included ?? decision trees with a maximum depth of ?? to balance model complexity with generalization capability. Five-fold cross-validation was implemented to ensure robustness and assess model stability.
