@@ -121,7 +121,7 @@
 
 \author{\fnm{Fabio} \sur{Duarte}}\email{iiiauthor@gmail.com}
 
-\author[1,4]{\fnm{Carlo} \sur{Ratti}}\email{iauthor@gmail.com}
+\author{\fnm{Carlo} \sur{Ratti}}\email{iauthor@gmail.com}
 
 
 
@@ -129,7 +129,7 @@
 
 \affil[2]{\orgname{Amsterdam Institute for Advanced Metropolitan Solutions}, \orgaddress{\street{Kattenburgerstraat 5}, \city{Amsterdam}, \country{Netherlands}}}
 
-\affil[4]{\orgdiv{ABC Department}, \orgname{Politecnico di Milano}, \orgaddress{\city{Milan}, \country{Italy}}}
+\affil[3]{\orgdiv{Department}, \orgname{Organization}, \orgaddress{\street{Street}, \city{City}, \postcode{610101}, \state{State}, \country{Country}}}
 
 %%==================================%%
 %% Sample for unstructured abstract %%
