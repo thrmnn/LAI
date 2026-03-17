@@ -4,7 +4,7 @@
 
 Our analysis focused on tile 25BZ1 within the Amsterdam municipality. Within this tile, our model detected approximately 12,000 trees—substantially exceeding the 3,929 public trees recorded in the municipal database. The municipal dataset, which includes species information for all entries, therefore captures only about one-third of trees present in the tile, highlighting the model's ability to identify both public and private or otherwise unregistered trees.
 
-\begin{figure}[h!]
+\begin{figure}[ht!]
     \centering
     \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{figures/results/training/overview_multi_panel.png}
     \caption{Overview of our Tree Dataset}
@@ -19,7 +19,7 @@ The LAI values observed for the majority of trees (1--7 m²/m²) are consistent 
 
 \subsubsection{Model Performance Comparison}
 
-\begin{figure}[h!]
+\begin{figure}[ht!]
     \centering
     \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{figures/results/training/model_comparison.png}
     \caption{Comparative performance of LAI prediction models. XGBoost and Random Forest achieved highest accuracy (R² = 0.784), substantially outperforming traditional allometric baselines and linear models. Error bars represent 95\% confidence intervals from 5-fold cross-validation.}
@@ -28,7 +28,7 @@ The LAI values observed for the majority of trees (1--7 m²/m²) are consistent 
 
 Eight predictive models were evaluated on the independent test set (N=1,063; Figure \ref{fig:model_perf_comp}, Table \ref{tab:model_comparison}). XGBoost achieved the highest performance with test R² = 0.784 (RMSE = 0.620, MAE = 0.462), explaining 78.4\% of LAI variance and reducing prediction error by 30.4\% relative to the allometric baseline (RMSE reduction from 0.891 to 0.620). Random Forest performed nearly identically (R² = 0.784, RMSE = 0.620, MAE = 0.465), while the neural network showed marginally lower performance (R² = 0.783). Linear models with regularization performed surprisingly well (R² $\approx$ 0.774), suggesting LAI relationships are predominantly linear with modest benefit from non-linear transformations.
 
-\begin{table}[h!]
+\begin{table}[ht!]
     \centering
     \caption{Comparative performance of LAI prediction models on the independent test set (N=1,063). Relative improvement calculated as $[(R^2_{model} - R^2_{allometric}) / R^2_{allometric}] \times 100\%$.}
     \label{tab:model_comparison}
@@ -56,7 +56,7 @@ The XGBoost model demonstrated strong predictive capability across the LAI range
 
 \subsubsection{Feature Importance}
 
-\begin{figure}[h!]
+\begin{figure}[ht!]
     \centering
     \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{figures/results/training/feature_importance_plot.png}
     \caption{Feature importance analysis for XGBoost LAI prediction model. Height-related features dominate predictions (51.3\% collective importance), with log-transformed height and average height as top predictors. NDVI-height interaction terms rank prominently, indicating spectral information modulates structural relationships.}
@@ -71,7 +71,7 @@ Feature ablation analysis (Supplementary Results) confirmed that base morphologi
 
 \subsubsection{Ecological Relationships}
 
-\begin{figure}[h!]
+\begin{figure}[ht!]
     \centering
     \begin{subfigure}[b]{0.48\textwidth}
         \centering

@@ -1,7 +1,7 @@
 \section{Methodology}
 \subsection{Data description and expected outputs}
 
-\begin{figure}[h!]
+\begin{figure}[ht!]
     \centering
     % First image
     \begin{subfigure}[b]{0.3\textwidth} % Adjust width as needed for spacing
@@ -26,7 +26,7 @@
         \caption{Vegetation Point Cloud}
         \label{fig:image3}
     \end{subfigure}
-    \caption{Comparision of input data sources}
+    \caption{Comparison of input data sources}
     \label{fig:three_images}
 \end{figure}
 
@@ -37,7 +37,7 @@ This study uses complementary remote sensing data covering Amsterdam's urban are
 While high-resolution aerial imagery is increasingly available through municipal open data portals, LiDAR coverage varies substantially. Our framework accommodates variable point densities (5-20 points/m²) through adaptive voxel sizing, enabling application in regions with less dense LiDAR coverage.
 
 %% CHM and NDVI Rasters !!
-% \begin{figure}[h!]
+% \begin{figure}[ht!]
 %     \centering
 %     % First image
 %     \begin{subfigure}[b]{0.48\textwidth} % Adjust width as needed for spacing
@@ -63,7 +63,7 @@ The data preprocessing pipeline involved three key steps: vegetation classificat
 
 To improve the robustness of our tree segmentation model and reduce false positives in non-vegetated areas, we applied a NDVI-based contrast enhancing pipeline on aerial images (Figure 2). Specifically, pixels with NDVI values below 0.0 were progressively darkened using a linear attenuation function with a minimum brightness factor of 0.4. This was followed by partial desaturation of the same regions, blending 50\% toward grayscale to suppress color cues in non-vegetated zones. Finally, a Gaussian blur was applied to low-NDVI areas to reduce distracting texture and emphasize vegetated regions. This approach preserves the overall image structure while subtly guiding the model's attention toward vegetated areas without introducing unnatural masking artifacts.
 
-\begin{figure}[h!]
+\begin{figure}[ht!]
     \centering
     % First image
     \begin{subfigure}[b]{0.48\textwidth} % Adjust width as needed for spacing
@@ -80,7 +80,7 @@ To improve the robustness of our tree segmentation model and reduce false positi
         \caption{NDVI-Enhanced Image}
         \label{fig:ndvi_preprocessed}
     \end{subfigure}
-    \caption{\textbf{NDVI-based contrast enhancement workflow.} The preprocessing pipeline applies NDVI-based contrast enhancement to aerial RGB imagery to improve detection and segmentation of individual urban trees. (a) Original aerial RGB image showing urban tree canopies. (b) NDVI-enhanced image with improved contrast for tree crown delineation. This preprocessing step significantly improves the performance of deep learning segmentation models by emphasizing vegetation features while suppressing background urban surfaces.}
+    \caption{\textbf{NDVI-based contrast enhancement workflow.} (a) Original aerial RGB image. (b) NDVI-enhanced image with improved contrast for tree crown delineation. This preprocessing emphasizes vegetation features while suppressing background urban surfaces, improving deep learning segmentation performance.}
     \label{fig:ndvi_enhancement}
 \end{figure}
 
