@@ -2,12 +2,12 @@
 
 \subsection{Amsterdam Urban Tree Dataset}
 
-Our analysis focused on tile 25BZ1 within the Amsterdam municipality. Within this tile, our model detected approximately 12,000 trees—substantially exceeding the 3,929 public trees recorded in the municipal database. The municipal dataset, which includes species information for all entries, therefore captures only about one-third of trees present in the tile, highlighting the model's ability to identify both public and private or otherwise unregistered trees.
+Our analysis focused on tile 25BZ1 within the Amsterdam municipality. Within this tile, our model detected 12,350 trees—substantially exceeding the 3,929 public trees recorded in the municipal database. The municipal dataset, which includes species information for all entries, therefore captures only about one-third of trees present in the tile, highlighting the model's ability to identify both public and private or otherwise unregistered trees.
 
 \begin{figure}[ht!]
     \centering
     \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{figures/results/training/overview_multi_panel.png}
-    \caption{Overview of our Tree Dataset}
+    \caption{Overview of the Amsterdam urban tree dataset.}
     \label{fig:overview_dataset}
 \end{figure}
 
@@ -26,7 +26,7 @@ The LAI values observed for the majority of trees (1--7 m²/m²) are consistent 
     \label{fig:model_perf_comp}
 \end{figure}
 
-Eight predictive models were evaluated on the independent test set (N=1,063; Figure \ref{fig:model_perf_comp}, Table \ref{tab:model_comparison}). XGBoost achieved the highest performance with test R² = 0.784 (RMSE = 0.620, MAE = 0.462), explaining 78.4\% of LAI variance and reducing prediction error by 30.4\% relative to the allometric baseline (RMSE reduction from 0.891 to 0.620). Random Forest performed nearly identically (R² = 0.784, RMSE = 0.620, MAE = 0.465), while the neural network showed marginally lower performance (R² = 0.783). Linear models with regularization performed surprisingly well (R² $\approx$ 0.774), suggesting LAI relationships are predominantly linear with modest benefit from non-linear transformations.
+Eight predictive models were evaluated on the independent test set (N=1,063; Figure~\ref{fig:model_perf_comp}, Table~\ref{tab:model_comparison}). XGBoost achieved the highest performance with test R² = 0.784 (RMSE = 0.620, MAE = 0.462), explaining 78.4\% of LAI variance and reducing prediction error by 30.4\% relative to the allometric baseline (RMSE reduction from 0.891 to 0.620). Random Forest performed nearly identically (R² = 0.784, RMSE = 0.620, MAE = 0.465), while the neural network showed marginally lower performance (R² = 0.783). Linear models with regularization performed surprisingly well (R² $\approx$ 0.774), suggesting LAI relationships are predominantly linear with modest benefit from non-linear transformations.
 
 \begin{table}[ht!]
     \centering
@@ -63,7 +63,7 @@ The XGBoost model demonstrated strong predictive capability across the LAI range
     \label{fig:feature_importance}
 \end{figure}
 
-Feature importance analysis revealed that tree height and its derivatives dominated predictions (Figure \ref{fig:feature_importance}). The top five features accounted for 59.9\% of total importance, with height-related features representing 51.3\% collectively. Logarithmic height transformation (importance = 0.224) and raw average height (0.224) exhibited nearly identical importance, confirming vertical structure as the primary LAI driver. Height category indicators (e.g., height\_category\_5-10m: 0.074) captured non-linear threshold effects, while height variability metrics (std\_height: 0.040) represented crown architecture complexity.
+Feature importance analysis revealed that tree height and its derivatives dominated predictions (Figure~\ref{fig:feature_importance}). The top five features accounted for 59.9\% of total importance, with height-related features representing 51.3\% collectively. Logarithmic height transformation (importance = 0.224) and raw average height (0.224) exhibited nearly identical importance, confirming vertical structure as the primary LAI driver. Height category indicators (e.g., height\_category\_5-10m: 0.074) captured non-linear threshold effects, while height variability metrics (std\_height: 0.040) represented crown architecture complexity.
 
 NDVI-height interaction terms ranked prominently (0.068), indicating spectral information modulates height-LAI relationships—capturing canopy density variations not explained by structure alone. Species features showed modest individual importance (is\_deciduous: 0.022), collectively contributing 4.83\% across four species-related variables. Comparison between Random Forest and XGBoost feature rankings showed high concordance (Spearman's $\rho$ = 0.87), with both algorithms prioritizing height features, though XGBoost assigned relatively higher importance to interaction terms and Random Forest weighted crown dimension features more heavily.
 
@@ -90,7 +90,7 @@ Feature ablation analysis (Supplementary Results) confirmed that base morphologi
     \label{fig:scatter_height_ndvi}
 \end{figure}
 
-Partial dependence analysis revealed interpretable ecological relationships (Figure \ref{fig:scatter_height_ndvi}). LAI increased monotonically with height following a logarithmic trajectory: rapid gains from 2--10 m ($\Delta$LAI $\approx$ 2.5) with diminishing returns above 15 m ($\Delta$LAI $\approx$ 0.8 from 15--30 m), consistent with architectural constraints where leaf distribution saturates approaching canopy closure.
+Partial dependence analysis revealed interpretable ecological relationships (Figure~\ref{fig:scatter_height_ndvi}). LAI increased monotonically with height following a logarithmic trajectory: rapid gains from 2--10 m ($\Delta$LAI $\approx$ 2.5) with diminishing returns above 15 m ($\Delta$LAI $\approx$ 0.8 from 15--30 m), consistent with architectural constraints where leaf distribution saturates approaching canopy closure.
 
 The NDVI-LAI relationship showed positive, approximately linear association (R = 0.62) with saturation at high NDVI (>0.85), consistent with spectral index saturation in dense canopies. Interaction effects were evident: at low heights (<8 m), NDVI had minimal predictive power ($\Delta$LAI $\approx$ 0.3), while for tall trees (>20 m), NDVI variation explained substantial LAI differences ($\Delta$LAI $\approx$ 1.8), likely reflecting canopy vigor and foliar density variations not captured by structure alone.
 
