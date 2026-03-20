@@ -29,3 +29,5 @@ compile_output.log
 # Python cache (if any)
 __pycache__/
 *.pyc
+*.Zone.Identifier
+*:Zone.Identifier
