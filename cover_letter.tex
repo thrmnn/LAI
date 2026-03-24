@@ -1,8 +1,12 @@
 \documentclass[11pt]{letter}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
-\usepackage[margin=1in]{geometry}
+\usepackage[margin=1in,top=0.75in]{geometry}
 \usepackage{hyperref}
+\renewcommand{\opening}[1]{\thispagestyle{firstpage}%
+  {\raggedright\toname \\ \toaddress \par}%
+  \vspace{0.5\baselineskip}\noindent#1\par\noindent}
+\setlength{\longindentation}{0pt}
 
 \signature{Th\'eo Hermann\\Senseable City Lab\\Massachusetts Institute of Technology\\77 Massachusetts Avenue, Cambridge, MA, USA\\thermann@mit.edu}
 
@@ -16,23 +20,17 @@
 
 \opening{Dear Editors,}
 
-We are pleased to submit our manuscript entitled ``Mapping Leaf Area Index (LAI) in Urban Forest'' for consideration as an Article in \textit{Nature Cities}.
+We are pleased to submit our manuscript entitled ``Mapping Leaf Area Index (LAI) in Urban Forests'' for consideration as an Article in \textit{Nature Cities}.
 
-As 2024 marked the warmest year on record and urban populations continue to grow, cities face an urgent need for evidence-based strategies to combat the Urban Heat Island effect, which elevates local temperatures 2--5\textdegree C above surrounding areas and exacerbates heat-related mortality. Urban trees are among the most effective countermeasures, yet quantifying their cooling potential at city scale remains a critical barrier: traditional arborist-led inventories are labor-intensive, infrequently updated, and systematically exclude private-property trees---often the majority of the urban forest. We believe this work directly addresses \textit{Nature Cities}' mission to advance interdisciplinary urban science that informs policy and planning.
+Urban trees are among the most effective tools for mitigating the Urban Heat Island effect, yet no scalable method exists to quantify their cooling potential---measured through Leaf Area Index (LAI)---at city scale. Traditional arborist-led inventories are labor-intensive, infrequently updated, and systematically exclude private-property trees, which often constitute the majority of the urban forest.
 
-Our manuscript presents an automated framework for mapping Leaf Area Index (LAI)---the key metric governing canopy shading capacity---at individual-tree resolution across entire cities. The methodology integrates airborne LiDAR point clouds, high-resolution aerial imagery (RGB and near-infrared), and machine learning (XGBoost) to produce city-wide LAI maps from standard municipal remote sensing data. Key findings include:
+Our manuscript addresses this gap with a multi-modal remote sensing framework that, to our knowledge, is the first to integrate airborne LiDAR, four-band aerial imagery (RGB + near-infrared), deep learning--based crown segmentation, and gradient-boosted regression into a unified pipeline for individual-tree LAI mapping across entire cities. Critically, the approach adapts to variable LiDAR point densities (5--20~pts/m$^2$) and generalises LAI predictions from tree morphology and genus to areas where only moderate-resolution data---or no LiDAR---is available, making it deployable in municipalities with heterogeneous data infrastructure.
 
-\begin{itemize}
-    \item A predictive accuracy of R$^2$ = 0.784, representing a 39\% improvement over traditional allometric baselines, with errors comparable to manual hemispherical photography measurements.
-    \item Detection of three times more trees than the existing municipal database in Amsterdam, demonstrating the framework's ability to capture the full urban forest including private-property trees.
-    \item A scalable, cost-effective pipeline adaptable to variable LiDAR point densities (5--20 pts/m$^2$), enabling deployment in cities with diverse data availability.
-\end{itemize}
+Applied to Amsterdam (12,350 trees, 25~km$^2$), the framework detected three times more trees than the official municipal registry, capturing the private-property canopy that conventional inventories miss. The model substantially outperforms allometric baselines (R$^2$ = 0.784, a 39\% improvement), with errors comparable to manual hemispherical photography. Processing required only standard hardware, and both the dataset (Hugging Face) and code (GitHub) are publicly available to support reproducibility and adoption.
 
-By providing quantitative shade assessments that extend beyond public land, this framework equips municipalities with actionable intelligence for strategic tree planting in heat-vulnerable neighborhoods---bridging urban forestry, climate adaptation, and environmental justice. The hybrid approach is designed for operational scalability: processing Amsterdam's study area required only standard computing hardware, and the methodology transfers directly to any city with aerial survey programs.
+The resulting city-wide LAI maps give planners actionable intelligence for targeting shade interventions in heat-vulnerable neighborhoods, bridging urban forestry, climate adaptation, and environmental justice. The methodology transfers directly to any city with aerial survey programs, offering a practical pathway from fragmented canopy data to equitable urban cooling strategies. We believe this work aligns closely with \textit{Nature Cities}' interdisciplinary mission.
 
-This manuscript has not been published, is not under consideration, and is not in press at any other journal. There have been no prior discussions with a \textit{Nature Cities} editor regarding this work. All co-authors---Michiel van Selm, Titus Venverloo, Fabio Duarte, and Carlo Ratti---have reviewed and approved the manuscript for submission.
-
-We believe this work will be of broad interest to \textit{Nature Cities}' readership spanning urban ecology, climate science, remote sensing, and municipal planning. We look forward to your consideration.
+This manuscript has not been published and is not under consideration elsewhere. All co-authors---Michiel van Selm, Titus Venverloo, Fabio Duarte, and Carlo Ratti---have reviewed and approved submission. We look forward to your consideration.
 
 \closing{Sincerely,}
 

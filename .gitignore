@@ -28,6 +28,9 @@ compile_output.log
 *.backup.*
 *.zip
 
+# Original figures (pre-upscale backups, kept locally)
+_originals/
+
 # Python cache (if any)
 __pycache__/
 *.pyc
