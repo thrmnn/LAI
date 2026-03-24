@@ -1,11 +1,18 @@
 
 \backmatter
 
-\bmhead{Acknowledgements}
+% Use \bmhead* (unnumbered, no auto-bookmark) with explicit \pdfbookmark[1]
+% to avoid hyperref bookmark-level-jump warnings (\bmhead = subparagraph level 5;
+% previous heading is section level 1, causing level-difference warnings).
+\phantomsection
+\pdfbookmark[1]{Acknowledgements}{acknowledgements}%
+\bmhead*{Acknowledgements}
 
 Not applicable.
 
-\bmhead{Declarations}
+\phantomsection
+\pdfbookmark[1]{Declarations}{declarations}%
+\bmhead*{Declarations}
 
 \noindent\textbf{Funding}
 Not applicable.

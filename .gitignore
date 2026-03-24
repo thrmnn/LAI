@@ -25,6 +25,8 @@ compile_output.log
 *~
 .*.swp
 .DS_Store
+*.backup.*
+*.zip
 
 # Python cache (if any)
 __pycache__/
