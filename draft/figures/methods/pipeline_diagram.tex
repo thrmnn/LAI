@@ -1,93 +1,131 @@
 \begin{figure*}[ht!]
 \centering
+\resizebox{\textwidth}{!}{%
 \begin{tikzpicture}[
-    % Global styles
-    node distance=0.6cm and 0.8cm,
-    >=stealth,
-    % Box styles
-    data/.style={rectangle, draw=black!70, fill=blue!8, rounded corners=2pt,
-        minimum height=1.1cm, minimum width=2.4cm, align=center,
-        font=\footnotesize, text width=2.2cm},
-    process/.style={rectangle, draw=black!70, fill=orange!10, rounded corners=2pt,
-        minimum height=1.1cm, minimum width=2.4cm, align=center,
-        font=\footnotesize, text width=2.2cm},
-    output/.style={rectangle, draw=black!70, fill=green!10, rounded corners=2pt,
-        minimum height=1.1cm, minimum width=2.4cm, align=center,
-        font=\footnotesize, text width=2.2cm},
-    mlbox/.style={rectangle, draw=black!70, fill=purple!8, rounded corners=2pt,
-        minimum height=1.1cm, minimum width=2.4cm, align=center,
-        font=\footnotesize, text width=2.2cm},
-    arrow/.style={->, thick, black!60},
-    groupbox/.style={draw=black!40, dashed, rounded corners=4pt, inner sep=8pt},
-    grouplabel/.style={font=\footnotesize\bfseries, anchor=north west},
+    % ── Global ──
+    >=Stealth,
+    % ── Node styles ──
+    data/.style={rectangle, draw=black!60, fill=blue!6,
+        rounded corners=2pt, minimum height=1.15cm, minimum width=2.6cm,
+        align=center, font=\small, text width=2.4cm},
+    process/.style={rectangle, draw=black!60, fill=orange!7,
+        rounded corners=2pt, minimum height=1.15cm, minimum width=2.6cm,
+        align=center, font=\small, text width=2.4cm},
+    output/.style={rectangle, draw=black!60, fill=green!8,
+        rounded corners=2pt, minimum height=1.15cm, minimum width=2.6cm,
+        align=center, font=\small, text width=2.4cm},
+    mlbox/.style={rectangle, draw=black!60, fill=violet!7,
+        rounded corners=2pt, minimum height=1.15cm, minimum width=2.6cm,
+        align=center, font=\small, text width=2.4cm},
+    % ── Arrow styles ──
+    arr/.style={->, thick, black!55},
+    arrlabel/.style={font=\scriptsize, text=black!55},
+    % ── Group styles ──
+    groupbox/.style={draw=black!35, dashed, rounded corners=5pt, inner sep=10pt},
+    glabel/.style={font=\small\bfseries, text=black!60},
 ]
 
-% ============================================================
-% ROW 1: Imagery path
-% ============================================================
-\node[data] (rgb) {RGB + NIR\\Imagery\\{\tiny (0.25\,m)}};
-\node[process, right=of rgb] (ndvi) {NDVI Contrast\\Enhancement\\+ CHM};
-\node[process, right=of ndvi] (deepforest) {DeepForest\\Crown\\Segmentation};
-\node[output, right=of deepforest] (crowns) {Crown Polygons\\+ Genus\\+ Morphology};
+% ── Column centres: 0, 3.3, 6.6, 9.9  (rows 1–2) ──
+% ── Row centres:    0 (row 1), −2.4 (row 2), −5.6 (row 3) ──
 
-% ============================================================
-% ROW 2: LiDAR path
-% ============================================================
-\node[data, below=1.0cm of rgb] (lidar) {Airborne\\LiDAR\\{\tiny (25\,pts/m$^2$)}};
-\node[process, right=of lidar] (vegclass) {Vegetation\\Classification\\{\tiny (HSV filtering)}};
-\node[process, right=of vegclass] (voxel) {Voxelization\\+ MacArthur--\\Horn LAD};
-\node[output, right=of voxel] (lai) {Per-tree LAI\\{\tiny (ground truth)}\\{\tiny 0.5\,m$^3$ voxels}};
+% ===========================================================
+% ROW 1 — Imagery path
+% ===========================================================
+\node[data]    (rgb)        at (0,0)     {RGB\,+\,NIR\\Imagery\\[-1pt]{\scriptsize 0.25\,m}};
+\node[process] (preprocess) at (3.3,0)   {NDVI Contrast\\Enhancement\\[-1pt]{\scriptsize +\,CHM generation}};
+\node[process] (deepforest) at (6.6,0)   {DeepForest\\Crown\\Segmentation};
+\node[output]  (crowns)     at (9.9,0)   {Individual Tree\\Crowns\\[-1pt]{\scriptsize morphology\,+\,genus}};
 
-% ============================================================
-% Arrows — Contribution 1
-% ============================================================
-\draw[arrow] (rgb) -- (ndvi);
-\draw[arrow] (ndvi) -- (deepforest);
-\draw[arrow] (deepforest) -- (crowns);
-\draw[arrow] (lidar) -- (vegclass);
-\draw[arrow] (vegclass) -- (voxel);
-\draw[arrow] (voxel) -- (lai);
+% ===========================================================
+% ROW 2 — LiDAR path
+% ===========================================================
+\node[data]    (lidar)   at (0,-2.4)   {Airborne\\LiDAR\\[-1pt]{\scriptsize 25\,pts/m\textsuperscript{2}}};
+\node[process] (vegclas) at (3.3,-2.4) {Vegetation\\Classification\\[-1pt]{\scriptsize HSV filtering}};
+\node[process] (voxel)   at (6.6,-2.4) {Voxelization\\MacArthur--Horn\\[-1pt]{\scriptsize LAD integration}};
+\node[output]  (lai)     at (9.9,-2.4) {Per-tree LAI\\Estimates\\[-1pt]{\scriptsize 0.5\,m\textsuperscript{3} voxels}};
 
-% Cross-connections
-\draw[arrow] (crowns.south) -- ++(0,-0.35) -| (voxel.north);
-\draw[arrow, dashed, black!40] (lidar.north) -- ++(0,0.35) -| (ndvi.south);
+% ===========================================================
+% ROW 1–2 horizontal arrows
+% ===========================================================
+\draw[arr] (rgb)        -- (preprocess);
+\draw[arr] (preprocess) -- (deepforest);
+\draw[arr] (deepforest) -- (crowns);
+\draw[arr] (lidar)      -- (vegclas);
+\draw[arr] (vegclas)     -- (voxel);
+\draw[arr] (voxel)       -- (lai);
 
-% ============================================================
-% GROUP BOX — Contribution 1
-% ============================================================
+% ===========================================================
+% Cross-connection: DeepForest → Voxelization (vertical)
+% Crown polygons define the per-tree extraction regions
+% ===========================================================
+\draw[arr]
+    (deepforest.south) -- (voxel.north)
+    node[midway, right=2pt, arrlabel] {crown polygons};
+
+% ===========================================================
+% GROUP BOX 1 — Core pipeline
+% ===========================================================
 \begin{pgfonlayer}{background}
-    \node[groupbox, fill=blue!3,
-        fit=(rgb)(lidar)(crowns)(lai),
-        inner sep=10pt] (g1) {};
+    \node[groupbox, fill=blue!2,
+          fit=(rgb)(lidar)(crowns)(lai), inner sep=12pt] (g1) {};
 \end{pgfonlayer}
-\node[grouplabel, text=black!70] at ([xshift=2pt, yshift=-2pt]g1.north west)
-    {Core framework: Automated urban tree mapping \& LiDAR-based LAI estimation};
+\node[glabel, anchor=north west]
+    at ([xshift=3pt, yshift=-3pt]g1.north west)
+    {Core framework --- Automated tree mapping \& LiDAR-based LAI estimation};
 
-% ============================================================
-% ROW 3: ML prediction
-% ============================================================
-\node[mlbox, below=1.8cm of vegclass] (features) {Feature\\Engineering\\{\tiny (58 features)}};
-\node[mlbox, right=of features] (xgboost) {XGBoost\\Regression};
-\node[output, right=of xgboost] (maps) {City-wide\\LAI Maps\\{\tiny (GeoJSON, GeoTIFF)}};
+% ===========================================================
+% ROW 3 — ML prediction  (feature eng @ col 3, xgboost @ col 4)
+% ===========================================================
+\node[mlbox]  (features) at (6.6,-5.6) {Feature\\Engineering\\[-1pt]{\scriptsize 58 features}};
+\node[mlbox]  (xgboost)  at (9.9,-5.6) {XGBoost\\Regression};
+\node[output] (maps)     at (13.2,-5.6) {City-wide\\LAI Maps\\[-1pt]{\scriptsize GeoJSON\,/\,GeoTIFF}};
 
-% Arrows — Contribution 2
-\draw[arrow] (crowns.south) -- ++(0,-0.8) -| (features.north);
-\draw[arrow] (lai.south) -- ++(0,-0.5) -| node[pos=0.25, right, font=\tiny, text=black!50] {training targets} (xgboost.north);
-\draw[arrow] (features) -- (xgboost);
-\draw[arrow] (xgboost) -- (maps);
+% ===========================================================
+% ROW 3 horizontal arrows
+% ===========================================================
+\draw[arr] (features) -- (xgboost);
+\draw[arr] (xgboost)  -- (maps);
 
-% ============================================================
-% GROUP BOX — Contribution 2
-% ============================================================
+% ===========================================================
+% Inter-group arrow 1:  crowns → features  (curved, arcs left)
+% Carries morphological features + genus  (the X for training)
+% ===========================================================
+\draw[arr]
+    (crowns.south) to[out=-140, in=50]
+    node[pos=0.45, left=3pt, arrlabel, align=right]
+         {morphology\\[-2pt]+\,genus\;(\textit{X})}
+    (features.north);
+
+% ===========================================================
+% Inter-group arrow 2:  LAI → XGBoost  (vertical, same column)
+% Carries LiDAR-derived LAI as training targets  (the y)
+% ===========================================================
+\draw[arr]
+    (lai.south) -- (xgboost.north)
+    node[midway, right=2pt, arrlabel] {LAI targets\;(\textit{y})};
+
+% ===========================================================
+% GROUP BOX 2 — ML extensibility
+% ===========================================================
 \begin{pgfonlayer}{background}
-    \node[groupbox, fill=purple!3,
-        fit=(features)(xgboost)(maps),
-        inner sep=10pt] (g2) {};
+    \node[groupbox, fill=violet!2,
+          fit=(features)(xgboost)(maps), inner sep=12pt] (g2) {};
 \end{pgfonlayer}
-\node[grouplabel, text=black!70] at ([xshift=2pt, yshift=-2pt]g2.north west)
-    {Extensibility: ML-based LAI prediction for areas without LiDAR};
+\node[glabel, anchor=north west]
+    at ([xshift=3pt, yshift=-3pt]g2.north west)
+    {Extensibility --- ML-based LAI prediction for areas without LiDAR};
 
-\end{tikzpicture}
-\caption{\textbf{End-to-end methodology.} The framework comprises two stages. The \emph{core pipeline} (top) detects individual trees from aerial imagery using deep learning and estimates per-tree LAI from LiDAR point clouds via voxelization and Beer--Lambert light extinction modelling. The \emph{extensibility layer} (bottom) trains a gradient-boosted regression model on the LiDAR-derived LAI values, enabling LAI prediction from tree morphology and genus alone in areas where LiDAR data are unavailable. Dashed arrow indicates optional LiDAR input for CHM generation.}
+\end{tikzpicture}%
+}% end resizebox
+\caption{\textbf{End-to-end methodology.}
+The framework comprises two stages.
+The \emph{core pipeline} (top) detects individual trees from aerial imagery
+using deep-learning crown segmentation and estimates per-tree LAI from
+LiDAR point clouds via voxelization and Beer--Lambert light-extinction
+modelling.
+The \emph{extensibility layer} (bottom) uses the LiDAR-derived LAI values
+as training targets for a gradient-boosted regression model, enabling
+LAI prediction from tree morphology and genus alone in areas where LiDAR
+data are unavailable.}
 \label{fig:pipeline}
 \end{figure*}
