@@ -64,9 +64,9 @@ To improve the robustness of our tree segmentation model and reduce false positi
 % Output
 Our methodology produces four primary data products: (1) individual tree crown polygons matched with genus attribution from municipality database when available, (2) tree morphological parameters (height and crown diameter), (3) high-resolution LAI maps at 0.5m² resolution, and (4) a predictive model for estimating LAI from tree morphology and genus. These outputs are delivered in standard GIS formats (GeoJSON, GeoTIFF) to maximize interoperability with existing urban planning tools.
 
+\input{figures/methods/pipeline_diagram}
+
 \subsection{Tree Crown Segmentation}
-% Segmentation and Overlay
-% Insert Detection Bounding Box Figure
 Building on the multi-source dataset described above, individual trees were detected using the DeepForest model \cite{weinsteinCrossValidationDeepLearning2020}, a deep learning-based object detection framework specifically designed for tree crown delineation. DeepForest utilizes a RetinaNet architecture \cite{linFocalLossDense2017}
  with a ResNet-50 backbone and is trained on a diverse set of forest types using RGB imagery. In our workflow, we leveraged the pre-trained model provided by DeepForest, which identifies individual tree crowns by predicting bounding boxes directly from RGB image tiles. This approach allows for accurate tree detection without the need for multispectral or LiDAR data, making it suitable for generalization in contexts where Aerial Lidar Scan data might not be available. The model outputs were further refined through confidence thresholding and non-maximum suppression to eliminate duplicate detections.
 
@@ -77,7 +77,7 @@ With individual crowns delineated, canopy density for each tree was estimated us
 
 \subsection{Machine Learning Pipeline for LAI Prediction}
 
-These LiDAR-derived LAI values served as training targets for the machine learning pipeline described below.
+The voxelization approach described above provides physically grounded LAI estimates wherever LiDAR data are available. To extend LAI mapping to areas without LiDAR coverage---or to municipalities that lack high-density point clouds entirely---we train a supervised regression model using the LiDAR-derived LAI values as ground-truth targets. This prediction step is an extensibility mechanism: it trades the direct physical estimation for broader spatial applicability.
 
 \subsubsection{Feature Construction}
 
